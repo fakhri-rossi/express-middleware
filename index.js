@@ -3,20 +3,27 @@ const app = express();
 const morgan = require('morgan');
 
 // app.use(morgan('tiny'));
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
+
+// app.use((req, res, next) => {
+//     console.log('Midlleware pertama');
+//     next();
+//     console.log('Midlleware setelah pertama');
+// });
+
+// app.use((req, res, next) => {
+//     console.log('Midlleware Kedua');
+//     next();
+// });
 
 app.use((req, res, next) => {
-    console.log('Midlleware pertama');
+    req.timeRequest = Date.now();
+    console.log(req.method, req.url);
     next();
-    console.log('Midlleware setelah pertama');
-});
-
-app.use((req, res, next) => {
-    console.log('Midlleware Kedua');
-    next();
-});
+})
 
 app.get('/', (req, res) => {
+    console.log(req.timeRequest);
    res.send('Hello, World!');
 });
 
