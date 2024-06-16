@@ -22,19 +22,26 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
+const auth = (req, res, next) => {
     const { password } = req.query;
 
     if(password === "tahususu"){
         next();
     }
-    
+
     res.send('Perlu masukkan password');
-});
+};
 
 app.get('/', (req, res) => {
-    console.log(req.timeRequest);
-    res.send('Hello, World!');
+    res.send('Hello, Guest!');
+});
+
+app.get('/user', auth, (req, res) => {
+    res.send('Hello, User!');
+});
+
+app.get('/admin', auth, (req, res) => {
+    res.send('Hello, Admin!');
 });
     
 app.use((req, res, next) => {
