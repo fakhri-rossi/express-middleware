@@ -22,6 +22,15 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    const { password } = req.query;
+
+    if(password === "tahususu"){
+        next();
+    }
+    
+    res.send('Perlu masukkan password');
+});
 
 app.get('/', (req, res) => {
     console.log(req.timeRequest);
