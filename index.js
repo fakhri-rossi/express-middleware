@@ -44,10 +44,24 @@ app.get('/user', auth, (req, res) => {
 app.get('/admin', auth, (req, res) => {
     res.send('Hello, Admin!');
 });
+
+app.get('/error', (req, res) => {
+    bird.fly();
+});
     
+app.use((err, req, res, next) => {
+    console.log('**************');
+    console.log('*****Error****');
+    console.log('**************');
+    console.log(err.message);
+    // next(); // -> kalo mau next ke middleware selanjutnya
+    // next(err); // -> kalo mau berhenti ke page error
+});
+
 app.use((req, res, next) => {
     res.status(404).send('Page not found');
 }); 
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
