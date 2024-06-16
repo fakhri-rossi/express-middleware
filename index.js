@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const ErrorHandler = require('./ErrorHandler')
 
 // app.use(morgan('tiny'));
 app.use(morgan('dev'));
@@ -29,8 +30,7 @@ const auth = (req, res, next) => {
         next();
     }
 
-    // res.send('Perlu masukkan password');
-    throw new Error('Perlu masukkan password');
+    throw new ErrorHandler('Perlu masukkan password', 401);
 };
 
 app.get('/', (req, res) => {
@@ -48,16 +48,26 @@ app.get('/admin', auth, (req, res) => {
 app.get('/error', (req, res) => {
     bird.fly();
 });
-    
-app.use((err, req, res, next) => {
-    console.log('**************');
-    console.log('*****Error****');
-    console.log('**************');
-    console.log(err.message);
-    // next(); // -> kalo mau next ke middleware selanjutnya
-    // next(err); // -> kalo mau berhenti ke page error
+
+app.get('/general/error', (req, res) => {
+    throw new ErrorHandler();
 });
 
+// middleware error handler
+// app.use((err, req, res, next) => {
+//     console.log('**************');
+//     console.log('*****Error****');
+//     console.log('**************');
+//     console.log(err.message);
+//     // next(); // -> kalo mau next ke middleware selanjutnya
+//     next(err); // -> kalo mau berhenti ke page error
+// });
+app.use((err, req, res, next) => {
+    const { status = 500, message = 'Something went wrong' } = err;
+    res.status(status).send(message);
+})
+
+// middleware page not found
 app.use((req, res, next) => {
     res.status(404).send('Page not found');
 }); 
